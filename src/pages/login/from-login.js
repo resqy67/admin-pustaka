@@ -54,7 +54,7 @@ const FormLogin = () => {
           <div className="flex flex-wrap items-center gap-4">
             <img src="/logo_disdik.png" alt="logo" className="w-14 h-14" />
             <Typography variant="h4" className="text-black">
-              AISA
+              Pustaka Digital
             </Typography>
           </div>
         </div>
@@ -63,7 +63,7 @@ const FormLogin = () => {
           color="gray"
           className="mt-2 text-center"
         >
-          Access Intelligence System Applications
+          Pusat Sumber Belajar Digital SMK Airlangga
         </Typography>
         <form
           // onSubmit={Auth}
