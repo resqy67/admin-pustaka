@@ -1,59 +1,41 @@
 import {
-  Card,
-  CardBody,
   Typography,
   Breadcrumbs,
-  Select,
-  Option,
+  Card,
+  CardBody,
+  Button,
   Input,
   IconButton,
   Tooltip,
-  Button,
 } from "@material-tailwind/react";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
 import AdminLayout from "../../layout/admin-layout";
-import {
-  fetchDataBooks,
-  fetchDataCategories,
-  fetchDataDetailBook,
-} from "../../services/fetchData";
-import { postDataBookCategory, postDataBooks } from "../../services/postData";
+import { fetchDataCategories, fetchDataUsers } from "../../services/fetchData";
 import { useAuth } from "../../services/context/auth";
+
 import {
   ArrowDownLeftIcon,
   ArrowRightCircleIcon,
   PencilIcon,
 } from "@heroicons/react/24/solid";
-import { DetailPage } from "./detail-page";
-import AddDataModal from "./add-data";
-import AddBookCategory from "./add-category";
+import { postDataCategory } from "../../services/postData";
+import AddDataUsers from "./add-data";
 
-const TABLE_HEAD = [
-  "No",
-  "Judul Buku",
-  "Penulis",
-  "Penerbit",
-  "Tahun Terbit",
-  "Ketersediaan",
-  "Total Pembaca",
-  "Action",
-];
+const TABLE_HEAD = ["No", "Nama Category", "Action"];
 
-const ListData = () => {
+const AddCategory = () => {
   const { cookies } = useAuth();
-  const [dataBooks, setDataBooks] = useState([]);
-  const [selectedBook, setSelectedBook] = useState({});
-  const [loading, setLoading] = useState(true);
+
+  const [dataCategories, setDataCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(10);
   const [active, setActive] = useState(1);
-  const [open, setOpen] = useState(false);
   const [addDataModal, setAddDataModal] = useState(false);
-  const [addDataCategoryModal, setAddDataCategoryModal] = useState(false);
-  const [dataCategories, setDataCategories] = useState([]);
 
   const indexOfLastData = page;
   const indexOfFirstData = indexOfLastData - 10;
-  const currentData = dataBooks.slice(indexOfFirstData, indexOfLastData);
+  const currentData = dataCategories.slice(indexOfFirstData, indexOfLastData);
 
   const next = () => {
     if (active === 10) return;
@@ -68,67 +50,32 @@ const ListData = () => {
   };
 
   useEffect(() => {
-    const options = { cookies };
-    fetchDataCategories(options).then((data) => {
-      // console.log(data);
+    fetchDataCategories({ cookies }).then((data) => {
       setDataCategories(data);
+      setIsLoading(false);
     });
   }, []);
-
-  useEffect(() => {
-    const options = { cookies, per_page: page, page: active };
-    fetchDataBooks(options).then((data) => {
-      setDataBooks(data);
-      setLoading(false);
-    });
-  }, [page, active]);
-
-  const handleOpen = (data) => {
-    console.log(data.uuid);
-    setSelectedBook(data);
-    setOpen(!open);
-  };
 
   const handleAddOpen = () => {
     setAddDataModal(!addDataModal);
   };
 
-  const handleAddCategoryOpen = (data) => {
-    // console.log(category);
-    console.log(data.uuid);
-    setSelectedBook(data);
-    setAddDataCategoryModal(!addDataCategoryModal);
-  };
-
   const handleAddSubmit = (formData) => {
     const options = { cookies, formData };
-    postDataBooks(options).then((newBook) => {
-      setDataBooks((prevData) => [newBook, ...prevData]);
+    postDataCategory(options).then((newBook) => {
+      setDataCategories((prevData) => [newBook, ...prevData]);
       setAddDataModal(false);
     });
   };
 
-  const handleAddCategorySubmit = (formData) => {
-    const options = { cookies, formData };
-    postDataBookCategory(options).then((newBook) => {
-      // setDataBooks((prevData) => [newBook, ...prevData]);
-      setAddDataCategoryModal(false);
-    });
-  };
-  // postDataBooks(options).then((newBook) => {
-  //   setDataBooks((prevData) => [newBook, ...prevData]);
-  //   setAddDataCategoryModal(false);
-  // });
-  // };
-
   return (
     <AdminLayout>
-      <div className="flex items-center mb-4">
+      <div className="flex md:flex-col lg:flex-row mb-2">
         <Typography color="gray" variant="h4">
-          List Data Buku
+          List Data Category
         </Typography>
         <Breadcrumbs className="ml-2">
-          <a href="#" className="opacity-60">
+          <a href="/dashboard" className="opacity-60">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -138,31 +85,17 @@ const ListData = () => {
               <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
             </svg>
           </a>
-          <a href="#" className="opacity-60">
-            <span>List Data Peraturan</span>
+          <a href="/add-category" className="opacity-60">
+            <span>List Data Category</span>
           </a>
         </Breadcrumbs>
       </div>
-      <AddBookCategory
-        open={addDataCategoryModal}
-        handleOpen={handleAddCategoryOpen}
-        handleSubmit={handleAddCategorySubmit}
-        data={selectedBook}
-        category={dataCategories}
-        // cookies={cookies}
-      />
-      <DetailPage
-        open={open}
-        handleOpen={handleOpen}
-        data={selectedBook}
-        category={dataCategories}
-      />
-      <AddDataModal
+      <AddDataUsers
         open={addDataModal}
-        handleOpen={handleAddOpen}
         handleSubmit={handleAddSubmit}
+        handleOpen={handleAddOpen}
       />
-      <Card color="white" className="p-4 flex flex-col">
+      <Card color="white" className="p-4 flex">
         <CardBody>
           <div className="flex justify-between mb-4">
             <div>
@@ -209,7 +142,7 @@ const ListData = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {loading ? (
+                  {isLoading ? (
                     <tr>
                       <td colSpan={10} className="p-4 text-center">
                         <Typography
@@ -223,7 +156,7 @@ const ListData = () => {
                     </tr>
                   ) : (
                     currentData.map((data, index) => (
-                      <tr key={data.uuid} className="even:bg-blue-gray-50/50">
+                      <tr key={data.id} className="even:bg-blue-gray-50/50">
                         <td className="p-4">
                           <Typography
                             variant="small"
@@ -239,78 +172,15 @@ const ListData = () => {
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {data.title}
-                          </Typography>
-                        </td>
-                        <td className="p-4">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {data.author}
-                          </Typography>
-                        </td>
-                        <td className="p-4">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {data.publisher}
-                          </Typography>
-                        </td>
-                        <td className="p-4">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {data.year}
-                          </Typography>
-                        </td>
-                        <td className="p-4">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {data.availability === 1
-                              ? "Tersedia"
-                              : "Tidak Tersedia"}
-                          </Typography>
-                        </td>
-                        <td className="p-4">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {data.loan_count}
+                            {data.name}
                           </Typography>
                         </td>
                         <td className="p-4">
                           <div className="flex gap-2">
-                            <Tooltip content="Lihat Buku">
+                            <Tooltip content="Edit Data">
                               <IconButton
                                 variant="text"
-                                onClick={() => handleOpen(data)}
-                              >
-                                <PencilIcon className="h-4 w-4" color="gray" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip content="Add Kategori">
-                              <IconButton
-                                variant="text"
-                                onClick={() => handleAddCategoryOpen(data)}
-                              >
-                                <PencilIcon className="h-4 w-4" color="gray" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip content="Edit Buku">
-                              <IconButton
-                                variant="text"
-                                onClick={() => handleAddCategoryOpen(data)}
+                                // onClick={() => handleOpen(data)}
                               >
                                 <PencilIcon className="h-4 w-4" color="gray" />
                               </IconButton>
@@ -326,7 +196,7 @@ const ListData = () => {
             <div className="mt-4 flex justify-between items-center">
               <Typography color="gray">
                 Showing {indexOfFirstData + 1} to {indexOfLastData} of{" "}
-                {dataBooks.length}
+                {dataCategories.length}
               </Typography>
               <div className="flex items-center gap-4">
                 <IconButton
@@ -357,5 +227,4 @@ const ListData = () => {
     </AdminLayout>
   );
 };
-
-export default ListData;
+export default AddCategory;

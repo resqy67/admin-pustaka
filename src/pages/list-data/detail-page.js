@@ -14,11 +14,11 @@ export function DetailPage({ open, handleOpen, data }) {
       <Dialog open={open} handler={handleOpen}>
         <DialogHeader>
           <Typography color="blueGray" size="xl">
-            Detail Data Peraturan
+            Detail Data Buku
             {console.log(data)}
           </Typography>
         </DialogHeader>
-        <DialogBody>
+        <DialogBody className="max-h-[calc(100vh-200px)] overflow-y-auto">
           <div className="grid grid-flow-row">
             <div className="grid grid-cols-2 ml-7">
               <Typography color="blueGray" size="lg" className="">
@@ -73,7 +73,11 @@ export function DetailPage({ open, handleOpen, data }) {
                 Kategori Buku
               </Typography>
               <Typography color="blueGray" size="sm">
-                {data?.categories}
+                {/* {console.log(data?.categories[0].name)}
+                {data?.categories[0].name} */}
+                {data?.categories?.map((category) => (
+                  <span key={category.uuid}>{category.name}, </span>
+                )) || []}
               </Typography>
             </div>
             <div className="grid grid-cols-2 justify-stretch ml-7">

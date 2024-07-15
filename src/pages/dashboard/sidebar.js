@@ -43,12 +43,28 @@ export function Sidebar(isDrawerOpen, closeDrawer) {
             List Data Buku
           </ListItem>
         </Link>
-        <Link to="/input-data">
+        <Link to="/list-user">
           <ListItem>
             <ListItemPrefix>
               <ComputerDesktopIcon className="h-5 w-5" />
             </ListItemPrefix>
             List Data User
+          </ListItem>
+        </Link>
+        <Link to="/add-category">
+          <ListItem>
+            <ListItemPrefix>
+              <ComputerDesktopIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            List Data Category
+          </ListItem>
+        </Link>
+        <Link to="/list-loans">
+          <ListItem>
+            <ListItemPrefix>
+              <ComputerDesktopIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            List Data Peminjaman
           </ListItem>
         </Link>
         <hr className="my-2 border-blue-gray-50" />
