@@ -69,20 +69,27 @@ const Loans = () => {
   }, [page, active, cookies]);
 
   const handleOpen = (data) => {
-    setSelectedLoan(data);
     console.log(data);
-    setOpen(true);
+    setSelectedLoan(data);
+    setOpen(!open);
   };
 
   const handleAddOpen = () => {
     setAddDataModal(!addDataModal);
   };
 
-  const handleAddSubmit = (formData) => {
+  // const handleAddSubmit = (formData) => {
+  //   const options = { cookies, formData };
+  //   postReturnBook(options).then(() => {
+  //     setAddDataModal(false);
+  //   });
+  // };
+  const handleAddSubmit = async (formData) => {
     const options = { cookies, formData };
-    postReturnBook(options).then((newBook) => {
-      setDataLoans((prevData) => [newBook, ...prevData]);
-      setAddDataModal(false);
+    await postReturnBook(options);
+    setAddDataModal(false);
+    fetchDataLoans({ cookies, per_page: page, page: active }).then((data) => {
+      setDataLoans(data);
     });
   };
 
@@ -129,21 +136,6 @@ const Loans = () => {
       <Card color="white" className="p-4 flex">
         <CardBody>
           <div className="flex justify-between mb-4">
-            <div>
-              <Button
-                color="blue"
-                buttonType="filled"
-                size="regular"
-                rounded={false}
-                block={false}
-                iconOnly={false}
-                ripple="light"
-                onClick={handleAddOpen}
-              >
-                Tambah Data
-                {/* <Typography color="white">Tambah Data</Typography> */}
-              </Button>
-            </div>
             <div className="w-96">
               <Input
                 label="Cari Data ..."
@@ -205,7 +197,7 @@ const Loans = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {data.user.name}
+                              {data.user?.name}
                             </Typography>
                           </td>
                           <td className="p-4">
@@ -214,7 +206,7 @@ const Loans = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {data.user.nisn}
+                              {data.user?.nisn}
                             </Typography>
                           </td>
                           <td className="p-4">
@@ -223,7 +215,7 @@ const Loans = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {data.user.class}
+                              {data.user?.class}
                             </Typography>
                           </td>
                           <td className="p-4">
@@ -232,7 +224,7 @@ const Loans = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {data.book.title}
+                              {data.book?.title}
                             </Typography>
                           </td>
                           <td className="p-4">
@@ -264,7 +256,7 @@ const Loans = () => {
                           </td>
                           <td className="p-4">
                             <div className="flex gap-2">
-                              <Tooltip content="Edit Data">
+                              <Tooltip content="Kembalikan Peminjaman">
                                 <IconButton
                                   variant="text"
                                   onClick={() => handleOpen(data)}

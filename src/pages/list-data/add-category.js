@@ -32,12 +32,12 @@ const AddBookCategory = ({
     }));
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const formDataToSubmit = new FormData();
     for (const key in formData) {
       formDataToSubmit.append(key, formData[key]);
     }
-    handleSubmit(formDataToSubmit);
+    await handleSubmit(formDataToSubmit);
     setFormData({
       book_uuid: data.uuid,
       category_uuid: "",

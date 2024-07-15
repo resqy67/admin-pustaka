@@ -8,31 +8,26 @@ import {
   Button,
   IconButton,
 } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const ReturnBook = ({ open, handleOpen, handleSubmit, data }) => {
-  console.log(data);
   const [formData, setFormData] = useState({
-    loan_uuid: data.uuid,
+    loan_uuid: data?.uuid,
   });
 
-  // const handleChange = (e) => {
-  //   const { name, value, files } = e.target;
-  //   setFormData({
-  //     ...formData,
-  //     [name]: files ? files[0] : value,
-  //   });
-  // };
+  useEffect(() => {
+    setFormData({
+      loan_uuid: data?.uuid,
+    });
+  }, [data]);
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const formDataToSubmit = new FormData();
     for (const key in formData) {
       formDataToSubmit.append(key, formData[key]);
     }
-    handleSubmit(formDataToSubmit);
-    setFormData({
-      loan_uuid: data.uuid,
-    });
+    await handleSubmit(formDataToSubmit);
+    handleOpen(); // Tutup modal setelah submit
   };
 
   return (
@@ -44,15 +39,13 @@ const ReturnBook = ({ open, handleOpen, handleSubmit, data }) => {
             disabled={true}
             name="name"
             label="Nama Pengguna"
-            // onChange={handleChange}
-            // value={data.user.name}
+            value={data?.user?.name}
           />
           <Input
             disabled={true}
             name="name"
             label="Buku yang dipinjam"
-            // onChange={handleChange}
-            // value={data.book.title}
+            value={data?.book?.title}
           />
         </div>
       </DialogBody>
