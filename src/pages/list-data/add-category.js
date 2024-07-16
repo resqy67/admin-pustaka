@@ -25,6 +25,13 @@ const AddBookCategory = ({
     category_uuid: "",
   });
 
+  useEffect(() => {
+    setFormData({
+      book_uuid: data.uuid,
+      category_uuid: "",
+    });
+  }, [data.uuid]);
+
   const handleChange = (value, name) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -32,17 +39,25 @@ const AddBookCategory = ({
     }));
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (event) => {
+    event.preventDefault(); // Mencegah reload halaman
     const formDataToSubmit = new FormData();
     for (const key in formData) {
       formDataToSubmit.append(key, formData[key]);
     }
-    await handleSubmit(formDataToSubmit);
-    setFormData({
-      book_uuid: data.uuid,
-      category_uuid: "",
-    });
-    console.log(formData);
+
+    try {
+      await handleSubmit(formDataToSubmit);
+      handleOpen(false); // Menutup modal setelah submit berhasil
+      // Reset formData ke nilai awal jika diperlukan
+      setFormData({
+        book_uuid: data.uuid,
+        category_uuid: "",
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      // Tampilkan pesan error ke pengguna
+    }
   };
 
   return (
