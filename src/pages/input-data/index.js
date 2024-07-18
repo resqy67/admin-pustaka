@@ -39,6 +39,7 @@ const InputData = () => {
   const [page, setPage] = useState(10);
   const [active, setActive] = useState(1);
   const [addDataModal, setAddDataModal] = useState(false);
+  const [showNotification, setShowNotification] = useState("");
 
   const indexOfLastData = page;
   const indexOfFirstData = indexOfLastData - 10;
@@ -69,10 +70,16 @@ const InputData = () => {
 
   const handleAddSubmit = (formData) => {
     const options = { cookies, formData };
-    postDataUsers(options).then((newBook) => {
-      setDataUsers((prevData) => [newBook, ...prevData]);
-      setAddDataModal(false);
-    });
+    setShowNotification("sending data ...");
+    postDataUsers(options)
+      .then((newBook) => {
+        setShowNotification("Data has been sent successfully");
+        setDataUsers((prevData) => [newBook, ...prevData]);
+        setAddDataModal(false);
+      })
+      .catch((error) => {
+        setShowNotification("Failed to send data");
+      });
   };
 
   return (
@@ -97,6 +104,28 @@ const InputData = () => {
           </a>
         </Breadcrumbs>
       </div>
+      {showNotification && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+          {/* <strong className="font-bold"></strong> */}
+          <span className="block sm:inline">{showNotification}</span>
+          <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+            <svg
+              onClick={() => setShowNotification("")}
+              className="fill-current h-6 w-6 text-green-500"
+              role="button"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <title>Close</title>
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M14.95 5.05a.75.75 0 010 1.06l-4.89 4.89 4.89 4.89a.75.75 0 11-1.06 1.06l-4.89-4.89-4.89 4.89a.75.75 0 01-1.06-1.06l4.89-4.89-4.89-4.89a.75.75 0 011.06-1.06l4.89 4.89 4.89-4.89a.75.75 0 011.06 0z"
+              />
+            </svg>
+          </span>
+        </div>
+      )}
       <AddDataUsers
         open={addDataModal}
         handleSubmit={handleAddSubmit}

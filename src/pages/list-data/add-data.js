@@ -64,10 +64,18 @@ const AddDataModal = ({ handleOpen, handleSubmit, open }) => {
   };
 
   return (
-    <Dialog handleOpen={handleOpen} open={open}>
+    <Dialog
+      handleOpen={handleOpen}
+      open={open}
+      size="md"
+      className="min-w-[300px] sm:min-w-[500px] md:min-w-[700px] lg:min-w-[900px] "
+    >
       <form onSubmit={onSubmit}>
         <DialogHeader>Tambah Data Buku</DialogHeader>
-        <DialogBody divider>
+        <DialogBody
+          divider
+          className="max-h-[calc(100vh-200px)] overflow-y-auto"
+        >
           {error && <p style={{ color: "red" }}>{error}</p>}
           <div className="grid grid-cols-1 gap-4">
             <Input

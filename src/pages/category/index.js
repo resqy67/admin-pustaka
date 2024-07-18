@@ -32,6 +32,7 @@ const AddCategory = () => {
   const [page, setPage] = useState(10);
   const [active, setActive] = useState(1);
   const [addDataModal, setAddDataModal] = useState(false);
+  const [showNotification, setShowNotification] = useState("");
 
   const indexOfLastData = page;
   const indexOfFirstData = indexOfLastData - 10;
@@ -62,10 +63,16 @@ const AddCategory = () => {
 
   const handleAddSubmit = (formData) => {
     const options = { cookies, formData };
-    postDataCategory(options).then((newBook) => {
-      setDataCategories((prevData) => [newBook, ...prevData]);
-      setAddDataModal(false);
-    });
+    setShowNotification("sending data...");
+    postDataCategory(options)
+      .then((newBook) => {
+        setShowNotification("Data has been added");
+        setDataCategories((prevData) => [newBook, ...prevData]);
+        setAddDataModal(false);
+      })
+      .catch((error) => {
+        setShowNotification("Failed to add data");
+      });
   };
 
   return (
