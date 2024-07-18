@@ -50,6 +50,7 @@ const ListData = () => {
   const [addDataModal, setAddDataModal] = useState(false);
   const [addDataCategoryModal, setAddDataCategoryModal] = useState(false);
   const [dataCategories, setDataCategories] = useState([]);
+  const [showNotification, setShowNotification] = useState("");
 
   const indexOfLastData = page;
   const indexOfFirstData = indexOfLastData - 10;
@@ -102,18 +103,35 @@ const ListData = () => {
 
   const handleAddSubmit = (formData) => {
     const options = { cookies, formData };
-    postDataBooks(options).then((newBook) => {
-      setDataBooks((prevData) => [newBook, ...prevData]);
-      setAddDataModal(false);
-    });
+    // Show notification: Sending data...
+    setShowNotification("Sending data...");
+
+    postDataBooks(options)
+      .then((newBook) => {
+        // Show notification: Data added successfully
+        setShowNotification("Data added successfully");
+        setDataBooks((prevData) => [newBook, ...prevData]);
+        setAddDataModal(false);
+      })
+      .catch((error) => {
+        // Show notification: Error occurred while adding data
+        setShowNotification("Error occurred while adding data");
+        console.error(error);
+      });
   };
 
   const handleAddCategorySubmit = (formData) => {
     const options = { cookies, formData };
-    postDataBookCategory(options).then((newBook) => {
-      // setDataBooks((prevData) => [newBook, ...prevData]);
-      setAddDataCategoryModal(false);
-    });
+    setShowNotification("Sending data...");
+    postDataBookCategory(options)
+      .then((newBook) => {
+        setShowNotification("Data added successfully");
+        setAddDataCategoryModal(false);
+      })
+      .catch((error) => {
+        setShowNotification("Error occurred while adding data");
+        console.error(error);
+      });
   };
   // postDataBooks(options).then((newBook) => {
   //   setDataBooks((prevData) => [newBook, ...prevData]);
@@ -143,6 +161,28 @@ const ListData = () => {
           </a>
         </Breadcrumbs>
       </div>
+      {showNotification && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+          {/* <strong className="font-bold"></strong> */}
+          <span className="block sm:inline">{showNotification}</span>
+          <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+            <svg
+              onClick={() => setShowNotification("")}
+              className="fill-current h-6 w-6 text-green-500"
+              role="button"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <title>Close</title>
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M14.95 5.05a.75.75 0 010 1.06l-4.89 4.89 4.89 4.89a.75.75 0 11-1.06 1.06l-4.89-4.89-4.89 4.89a.75.75 0 01-1.06-1.06l4.89-4.89-4.89-4.89a.75.75 0 011.06-1.06l4.89 4.89 4.89-4.89a.75.75 0 011.06 0z"
+              />
+            </svg>
+          </span>
+        </div>
+      )}
       <AddBookCategory
         open={addDataCategoryModal}
         handleOpen={handleAddCategoryOpen}
