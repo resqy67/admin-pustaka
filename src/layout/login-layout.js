@@ -6,7 +6,8 @@ const LoginLayout = () => {
     <div className="flex lg:flex-row flex-auto w-full h-screen">
       <div className="w-full lg:w-2/3 hidden lg:block">
         <img
-          src="https://source.unsplash.com/random"
+          // src="https://source.unsplash.com/random"
+          src="/intro.jpg"
           alt="login"
           className="object-cover w-full h-full"
         />

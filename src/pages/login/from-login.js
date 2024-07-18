@@ -51,8 +51,8 @@ const FormLogin = () => {
     <div class="flex flex-col justify-center p-8 md:p-14">
       <Card color="transparent" shadow={false}>
         <div className="flex justify-center">
-          <div className="flex flex-wrap items-center gap-4">
-            <img src="/logo_disdik.png" alt="logo" className="w-14 h-14" />
+          <div className="flex flex-col flex-wrap items-center gap-4">
+            <img src="/logo-smk.png" alt="logo" className="w-16 h-16" />
             <Typography variant="h4" className="text-black">
               Pustaka Digital
             </Typography>

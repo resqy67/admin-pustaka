@@ -33,8 +33,17 @@ const AddDataModal = ({ handleOpen, handleSubmit, open }) => {
   };
 
   const validateForm = () => {
-    if (!formData.title || !formData.author) {
-      setError("Title and Author are required.");
+    if (
+      !formData.title ||
+      !formData.author ||
+      !formData.image ||
+      !formData.filepdf ||
+      !formData.publisher ||
+      !formData.isbn ||
+      !formData.year ||
+      !formData.pages
+    ) {
+      setError("Please fill all required fields.");
       return false;
     }
     return true;
@@ -84,6 +93,7 @@ const AddDataModal = ({ handleOpen, handleSubmit, open }) => {
               onChange={handleChange}
               value={formData.title}
               disabled={isSubmitting}
+              required
             />
             <Textarea
               name="description"
@@ -91,6 +101,7 @@ const AddDataModal = ({ handleOpen, handleSubmit, open }) => {
               onChange={handleChange}
               value={formData.description}
               disabled={isSubmitting}
+              required
             />
             <Input
               name="author"
@@ -98,6 +109,7 @@ const AddDataModal = ({ handleOpen, handleSubmit, open }) => {
               onChange={handleChange}
               value={formData.author}
               disabled={isSubmitting}
+              required
             />
             <Input
               name="publisher"
@@ -105,6 +117,7 @@ const AddDataModal = ({ handleOpen, handleSubmit, open }) => {
               onChange={handleChange}
               value={formData.publisher}
               disabled={isSubmitting}
+              required
             />
             <Input
               name="isbn"
@@ -112,6 +125,7 @@ const AddDataModal = ({ handleOpen, handleSubmit, open }) => {
               onChange={handleChange}
               value={formData.isbn}
               disabled={isSubmitting}
+              required
             />
             <Input
               name="year"
@@ -119,6 +133,7 @@ const AddDataModal = ({ handleOpen, handleSubmit, open }) => {
               onChange={handleChange}
               value={formData.year}
               disabled={isSubmitting}
+              required
             />
             <Input
               name="pages"
@@ -126,6 +141,7 @@ const AddDataModal = ({ handleOpen, handleSubmit, open }) => {
               onChange={handleChange}
               value={formData.pages}
               disabled={isSubmitting}
+              required
             />
             <Input
               type="file"
@@ -133,6 +149,7 @@ const AddDataModal = ({ handleOpen, handleSubmit, open }) => {
               label="Gambar"
               onChange={handleChange}
               disabled={isSubmitting}
+              required
             />
             <Input
               type="file"
@@ -140,6 +157,7 @@ const AddDataModal = ({ handleOpen, handleSubmit, open }) => {
               label="File PDF"
               onChange={handleChange}
               disabled={isSubmitting}
+              required
             />
           </div>
         </DialogBody>

@@ -44,6 +44,7 @@ const Loans = () => {
   const [active, setActive] = useState(1);
   const [addDataModal, setAddDataModal] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showNotification, setShowNotification] = useState("");
 
   const indexOfLastData = page;
   const indexOfFirstData = indexOfLastData - 10;
@@ -86,7 +87,14 @@ const Loans = () => {
   // };
   const handleAddSubmit = async (formData) => {
     const options = { cookies, formData };
-    await postReturnBook(options);
+    setShowNotification("sending data...");
+    await postReturnBook(options)
+      .then(() => {
+        setShowNotification("Data berhasil dikembalikan");
+      })
+      .catch((error) => {
+        setShowNotification("Failed to add data");
+      });
     setAddDataModal(false);
     fetchDataLoans({ cookies, per_page: page, page: active }).then((data) => {
       setDataLoans(data);
@@ -127,6 +135,27 @@ const Loans = () => {
         handleSubmit={handleAddSubmit}
         handleOpen={handleAddOpen}
       /> */}
+      {showNotification && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4">
+          <span className="block sm:inline">{showNotification}</span>
+          <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
+            <svg
+              onClick={() => setShowNotification("")}
+              className="fill-current h-6 w-6 text-green-500"
+              role="button"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <title>Close</title>
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M14.95 5.05a1 1 0 00-1.414 0L10 8.586 6.464 5.05a1 1 0 00-1.414 1.414L8.586 10l-3.535 3.536a1 1 0 001.414 1.414L10 11.414l3.536 3.536a1 1 0 001.414-1.414L11.414 10l3.536-3.536a1 1 0 000-1.414z"
+              />
+            </svg>
+          </span>
+        </div>
+      )}
       <ReturnBook
         open={open}
         handleOpen={handleOpen}
