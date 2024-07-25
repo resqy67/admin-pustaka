@@ -15,7 +15,6 @@ export function DetailPage({ open, handleOpen, data }) {
         <DialogHeader>
           <Typography color="blueGray" size="xl">
             Detail Data Buku
-            {console.log(data)}
           </Typography>
         </DialogHeader>
         <DialogBody className="max-h-[calc(100vh-200px)] overflow-y-auto">

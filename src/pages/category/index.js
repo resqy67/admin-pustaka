@@ -18,6 +18,7 @@ import {
   ArrowDownLeftIcon,
   ArrowRightCircleIcon,
   PencilIcon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/solid";
 import { postDataCategory } from "../../services/postData";
 import AddDataUsers from "./add-data";
@@ -26,6 +27,7 @@ const TABLE_HEAD = ["No", "Nama Category", "Action"];
 
 const AddCategory = () => {
   const { cookies } = useAuth();
+  const [refresh, setRefresh] = useState(false);
 
   const [dataCategories, setDataCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,7 +57,7 @@ const AddCategory = () => {
       setDataCategories(data);
       setIsLoading(false);
     });
-  }, []);
+  }, [refresh]);
 
   const handleAddOpen = () => {
     setAddDataModal(!addDataModal);
@@ -67,7 +69,8 @@ const AddCategory = () => {
     postDataCategory(options)
       .then((newBook) => {
         setShowNotification("Data has been added");
-        setDataCategories((prevData) => [newBook, ...prevData]);
+        setRefresh(!refresh);
+        // setDataCategories((prevData) => [newBook, ...prevData]);
         setAddDataModal(false);
       })
       .catch((error) => {
@@ -208,10 +211,15 @@ const AddCategory = () => {
                           <div className="flex gap-2">
                             <Tooltip content="Edit Data">
                               <IconButton
-                                variant="text"
+                                variant="filled"
+                                size="md"
+                                color="blue"
                                 // onClick={() => handleOpen(data)}
                               >
-                                <PencilIcon className="h-4 w-4" color="gray" />
+                                <PencilSquareIcon
+                                  className="h-6 w-6"
+                                  color="white"
+                                />
                               </IconButton>
                             </Tooltip>
                           </div>

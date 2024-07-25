@@ -22,11 +22,19 @@ import { useAuth } from "../../services/context/auth";
 import {
   ArrowDownLeftIcon,
   ArrowRightCircleIcon,
+  BookOpenIcon,
+  DocumentMagnifyingGlassIcon,
+  DocumentPlusIcon,
   PencilIcon,
+  TrashIcon,
 } from "@heroicons/react/24/solid";
 import { DetailPage } from "./detail-page";
 import AddDataModal from "./add-data";
 import AddBookCategory from "./add-category";
+import { destroyDataBook } from "../../services/destroyData";
+import DestroyData from "./destroy-data";
+import UpdateDataModal from "./put-data";
+import { putDataBook } from "../../services/putData";
 
 const TABLE_HEAD = [
   "No",
@@ -52,6 +60,10 @@ const ListData = () => {
   const [dataCategories, setDataCategories] = useState([]);
   const [showNotification, setShowNotification] = useState("");
 
+  const [updateDataModal, setUpdateDataModal] = useState(false);
+  const [destroyDataModal, setDestroyDataModal] = useState(false);
+
+  const [refresh, setRefresh] = useState(false);
   const indexOfLastData = page;
   const indexOfFirstData = indexOfLastData - 10;
   const currentData = dataBooks.slice(indexOfFirstData, indexOfLastData);
@@ -82,7 +94,7 @@ const ListData = () => {
       setDataBooks(data);
       setLoading(false);
     });
-  }, [page, active]);
+  }, [page, active, refresh]);
 
   const handleOpen = (data) => {
     console.log(data.uuid);
@@ -95,26 +107,32 @@ const ListData = () => {
   };
 
   const handleAddCategoryOpen = (data) => {
-    // console.log(category);
     console.log(data.uuid);
     setSelectedBook(data);
     setAddDataCategoryModal(!addDataCategoryModal);
   };
 
+  const handleDestroyDataModalOpen = (data) => {
+    setSelectedBook(data);
+    setDestroyDataModal(!destroyDataModal);
+  };
+
+  const handleUpdateDataModalOpen = (data) => {
+    setSelectedBook(data);
+    setUpdateDataModal(!updateDataModal);
+  };
+
   const handleAddSubmit = (formData) => {
     const options = { cookies, formData };
-    // Show notification: Sending data...
     setShowNotification("Sending data...");
-
     postDataBooks(options)
       .then((newBook) => {
-        // Show notification: Data added successfully
         setShowNotification("Data added successfully");
         setDataBooks((prevData) => [newBook, ...prevData]);
         setAddDataModal(false);
+        setRefresh(!refresh);
       })
       .catch((error) => {
-        // Show notification: Error occurred while adding data
         setShowNotification("Error occurred while adding data");
         console.error(error);
       });
@@ -133,11 +151,42 @@ const ListData = () => {
         console.error(error);
       });
   };
-  // postDataBooks(options).then((newBook) => {
-  //   setDataBooks((prevData) => [newBook, ...prevData]);
-  //   setAddDataCategoryModal(false);
-  // });
-  // };
+
+  const handleDestroyDataModal = (formData) => {
+    const book_uuid = formData.get("book_uuid");
+    const options = { cookies, book_uuid };
+    setShowNotification("Sending data...");
+    destroyDataBook(options)
+      .then(() => {
+        setShowNotification("Data deleted successfully");
+        setDestroyDataModal(false);
+        // Refresh the table data here
+        setRefresh(!refresh);
+      })
+      .catch((error) => {
+        setShowNotification("Error occurred while deleting data");
+        console.error(error);
+      });
+  };
+
+  const handleUpdateDataModal = (formData) => {
+    // const book_uuid = formData.get("book_uuid");
+    const book_uuid = selectedBook.uuid;
+    console.log(book_uuid);
+    const options = { cookies, formData, book_uuid };
+    setShowNotification("Sending data...");
+    putDataBook(options)
+      .then(() => {
+        setShowNotification("Data update successfully");
+        setDestroyDataModal(false);
+        // Refresh the table data here
+        setRefresh(!refresh);
+      })
+      .catch((error) => {
+        setShowNotification("Error occurred while deleting data");
+        console.error(error);
+      });
+  };
 
   return (
     <AdminLayout>
@@ -183,6 +232,18 @@ const ListData = () => {
           </span>
         </div>
       )}
+      <UpdateDataModal
+        open={updateDataModal}
+        handleOpen={handleUpdateDataModalOpen}
+        data={selectedBook}
+        handleSubmit={handleUpdateDataModal}
+      />
+      <DestroyData
+        open={destroyDataModal}
+        handleOpen={handleDestroyDataModalOpen}
+        data={selectedBook}
+        handleSubmit={handleDestroyDataModal}
+      />
       <AddBookCategory
         open={addDataCategoryModal}
         handleOpen={handleAddCategoryOpen}
@@ -333,26 +394,47 @@ const ListData = () => {
                           <div className="flex gap-2">
                             <Tooltip content="Lihat Buku">
                               <IconButton
-                                variant="text"
+                                variant="gradient"
+                                color="blue"
                                 onClick={() => handleOpen(data)}
                               >
-                                <PencilIcon className="h-4 w-4" color="gray" />
+                                <BookOpenIcon
+                                  className="h-4 w-4"
+                                  color="white"
+                                />
                               </IconButton>
                             </Tooltip>
                             <Tooltip content="Add Kategori">
                               <IconButton
-                                variant="text"
+                                variant="gradient"
+                                color="green"
                                 onClick={() => handleAddCategoryOpen(data)}
                               >
-                                <PencilIcon className="h-4 w-4" color="gray" />
+                                <DocumentPlusIcon
+                                  className="h-4 w-4"
+                                  color="white"
+                                />
                               </IconButton>
                             </Tooltip>
                             <Tooltip content="Edit Buku">
                               <IconButton
-                                variant="text"
-                                onClick={() => handleAddCategoryOpen(data)}
+                                variant="gradient"
+                                color="yellow"
+                                onClick={() => handleUpdateDataModalOpen(data)}
                               >
-                                <PencilIcon className="h-4 w-4" color="gray" />
+                                <DocumentMagnifyingGlassIcon
+                                  className="h-4 w-4"
+                                  color="white"
+                                />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip content="Delete Buku">
+                              <IconButton
+                                variant="gradient"
+                                color="red"
+                                onClick={() => handleDestroyDataModalOpen(data)}
+                              >
+                                <TrashIcon className="h-4 w-4" color="white" />
                               </IconButton>
                             </Tooltip>
                           </div>

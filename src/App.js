@@ -8,22 +8,24 @@ import ListData from "./pages/list-data";
 import InputData from "./pages/input-data";
 import AddCategory from "./pages/category";
 import Loans from "./pages/loans";
-
+import { AuthProvider } from "./services/context/auth";
 function App() {
   return (
     <Router>
-      <AppProviders>
-        <Routes>
-          <Route index element={<LoginAdmin />} />
-          <Route element={<ProtectRoutes />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/list-data" element={<ListData />} />
-            <Route path="/list-user" element={<InputData />} />
-            <Route path="/add-category" element={<AddCategory />} />
-            <Route path="/list-loans" element={<Loans />} />
-          </Route>
-        </Routes>
-      </AppProviders>
+      <AuthProvider>
+        <AppProviders>
+          <Routes>
+            <Route index element={<LoginAdmin />} />
+            <Route element={<ProtectRoutes />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/list-data" element={<ListData />} />
+              <Route path="/list-user" element={<InputData />} />
+              <Route path="/add-category" element={<AddCategory />} />
+              <Route path="/list-loans" element={<Loans />} />
+            </Route>
+          </Routes>
+        </AppProviders>
+      </AuthProvider>
     </Router>
   );
 }

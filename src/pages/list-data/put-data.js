@@ -7,18 +7,19 @@ import {
   Button,
   Select,
   Textarea,
+  Typography,
 } from "@material-tailwind/react";
 import React, { useState } from "react";
 
-const AddDataModal = ({ open, handleOpen, handleSubmit }) => {
+const UpdateDataModal = ({ open, handleOpen, handleSubmit, data }) => {
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    author: "",
-    publisher: "",
-    isbn: "",
-    year: "",
-    pages: "",
+    title: data?.title,
+    description: data?.description,
+    author: data?.author,
+    publisher: data?.publisher,
+    isbn: data?.isbn,
+    year: data?.year,
+    pages: data?.pages,
     image: null,
     filepdf: null,
   });
@@ -37,23 +38,23 @@ const AddDataModal = ({ open, handleOpen, handleSubmit }) => {
       formDataToSubmit.append(key, formData[key]);
     }
     handleSubmit(formDataToSubmit);
-    setFormData({
-      title: "",
-      description: "",
-      author: "",
-      publisher: "",
-      isbn: "",
-      year: "",
-      pages: "",
-      image: null,
-      filepdf: null,
-    });
+    // setFormData({
+    //   title: "",
+    //   description: "",
+    //   author: "",
+    //   publisher: "",
+    //   isbn: "",
+    //   year: "",
+    //   pages: "",
+    //   image: null,
+    //   filepdf: null,
+    // });
   };
 
   return (
     <Dialog open={open} handler={handleOpen}>
-      <DialogHeader>Tambah Data Buku</DialogHeader>
-      <DialogBody divider>
+      <DialogHeader>Update Data Buku</DialogHeader>
+      <DialogBody divider className="max-h-[calc(100vh-200px)] overflow-y-auto">
         <div className="grid grid-cols-1 gap-4">
           <Input
             name="title"
@@ -128,4 +129,4 @@ const AddDataModal = ({ open, handleOpen, handleSubmit }) => {
   );
 };
 
-export default AddDataModal;
+export default UpdateDataModal;

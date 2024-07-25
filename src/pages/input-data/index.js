@@ -18,6 +18,7 @@ import {
   ArrowDownLeftIcon,
   ArrowRightCircleIcon,
   PencilIcon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/solid";
 import { postDataUsers } from "../../services/postData";
 import AddDataUsers from "./add-data";
@@ -33,6 +34,7 @@ const TABLE_HEAD = [
 
 const InputData = () => {
   const { cookies } = useAuth();
+  const [refresh, setRefresh] = useState(false);
 
   const [dataUsers, setDataUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,7 +64,7 @@ const InputData = () => {
       setDataUsers(data);
       setIsLoading(false);
     });
-  }, [page, active]);
+  }, [page, active, refresh]);
 
   const handleAddOpen = () => {
     setAddDataModal(!addDataModal);
@@ -72,13 +74,14 @@ const InputData = () => {
     const options = { cookies, formData };
     setShowNotification("sending data ...");
     postDataUsers(options)
-      .then((newBook) => {
-        setShowNotification("Data has been sent successfully");
-        setDataUsers((prevData) => [newBook, ...prevData]);
+      .then(() => {
+        setShowNotification("Data user berhasil ditambahkan");
         setAddDataModal(false);
+        setRefresh(!refresh);
       })
       .catch((error) => {
         setShowNotification("Failed to send data");
+        console.error(error);
       });
   };
 
@@ -242,10 +245,13 @@ const InputData = () => {
                           <div className="flex gap-2">
                             <Tooltip content="Edit Data">
                               <IconButton
-                                variant="text"
+                                variant="filled"
                                 // onClick={() => handleOpen(data)}
                               >
-                                <PencilIcon className="h-4 w-4" color="gray" />
+                                <PencilSquareIcon
+                                  className="h-4 w-4"
+                                  color="white"
+                                />
                               </IconButton>
                             </Tooltip>
                           </div>

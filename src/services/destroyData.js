@@ -1,9 +1,11 @@
 import api from "./api";
 
-export const putDataBook = async (options) => {
-  const { cookies, formData, book_uuid } = options;
+export const destroyDataBook = async (options) => {
+  const { cookies, book_uuid } = options;
+  console.log(book_uuid);
+  console.log(cookies.token);
   try {
-    const response = await api.put(`/book/update/${book_uuid}`, formData, {
+    const response = await api.delete(`/book/delete/${book_uuid}`, {
       headers: {
         Authorization: `Bearer ${cookies.token}`,
       },

@@ -15,6 +15,7 @@ import { useAuth } from "../../services/context/auth";
 import {
   ArrowDownLeftIcon,
   ArrowRightCircleIcon,
+  DocumentMinusIcon,
   PencilIcon,
 } from "@heroicons/react/24/solid";
 // import { postDataCategory } from "../../services/postData";
@@ -287,12 +288,13 @@ const Loans = () => {
                             <div className="flex gap-2">
                               <Tooltip content="Kembalikan Peminjaman">
                                 <IconButton
-                                  variant="text"
+                                  variant="gradient"
+                                  color="cyan"
                                   onClick={() => handleOpen(data)}
                                 >
-                                  <PencilIcon
+                                  <DocumentMinusIcon
                                     className="h-4 w-4"
-                                    color="gray"
+                                    color="white"
                                   />
                                 </IconButton>
                               </Tooltip>
