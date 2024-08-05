@@ -20,7 +20,7 @@ const AddDataUsers = ({ open, handleOpen, handleSubmit }) => {
     nisn: "",
     class: "",
     description: "",
-    avatar: null,
+    avatar: "",
   });
 
   const handleChange = (e) => {
@@ -44,7 +44,7 @@ const AddDataUsers = ({ open, handleOpen, handleSubmit }) => {
       nisn: "",
       class: "",
       description: "",
-      avatar: null,
+      avatar: "",
     });
   };
 
