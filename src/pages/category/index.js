@@ -14,14 +14,18 @@ import AdminLayout from "../../layout/admin-layout";
 import { fetchDataCategories, fetchDataUsers } from "../../services/fetchData";
 import { useAuth } from "../../services/context/auth";
 
+import  { destroyDataCategory } from "../../services/destroyData";
+
 import {
   ArrowDownLeftIcon,
   ArrowRightCircleIcon,
   PencilIcon,
   PencilSquareIcon,
+  TrashIcon,
 } from "@heroicons/react/24/solid";
 import { postDataCategory } from "../../services/postData";
 import AddDataUsers from "./add-data";
+import DestroyData from "./destroy-data";
 
 const TABLE_HEAD = ["No", "Nama Category", "Action"];
 
@@ -35,6 +39,10 @@ const AddCategory = () => {
   const [active, setActive] = useState(1);
   const [addDataModal, setAddDataModal] = useState(false);
   const [showNotification, setShowNotification] = useState("");
+
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [destroyDataModal, setDestroyDataModal] = useState(false);
+
 
   const indexOfLastData = page;
   const indexOfFirstData = indexOfLastData - 10;
@@ -63,6 +71,11 @@ const AddCategory = () => {
     setAddDataModal(!addDataModal);
   };
 
+  const handleDestroyDataModal = (data) => {
+    setSelectedCategory(data);
+    setDestroyDataModal(!destroyDataModal);
+  };
+
   const handleAddSubmit = (formData) => {
     const options = { cookies, formData };
     setShowNotification("sending data...");
@@ -77,6 +90,20 @@ const AddCategory = () => {
         setShowNotification("Failed to add data");
       });
   };
+
+  const handleDestroy = (formData) => {
+    const category_uuid = formData.get("uuid");
+    const options = { cookies, category_uuid };
+    destroyDataCategory(options)
+      .then(() => {
+        setShowNotification("Data user berhasil dihapus");
+        setRefresh(!refresh);
+      })
+      .catch((error) => {
+        setShowNotification("Failed to delete data");
+        console.error(error);
+      });
+  }
 
   return (
     <AdminLayout>
@@ -126,6 +153,12 @@ const AddCategory = () => {
         open={addDataModal}
         handleSubmit={handleAddSubmit}
         handleOpen={handleAddOpen}
+      />
+      <DestroyData 
+        open={destroyDataModal}
+        handleOpen={handleDestroyDataModal}
+        handleSubmit={handleDestroy}
+        data={selectedCategory}
       />
       <Card color="white" className="p-4 flex">
         <CardBody>
@@ -213,10 +246,10 @@ const AddCategory = () => {
                               <IconButton
                                 variant="filled"
                                 size="md"
-                                color="blue"
-                                // onClick={() => handleOpen(data)}
+                                color="red"
+                                onClick={() => handleDestroyDataModal(data)}
                               >
-                                <PencilSquareIcon
+                                <TrashIcon
                                   className="h-6 w-6"
                                   color="white"
                                 />

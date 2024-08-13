@@ -19,9 +19,12 @@ import {
   ArrowRightCircleIcon,
   PencilIcon,
   PencilSquareIcon,
+  TrashIcon,
 } from "@heroicons/react/24/solid";
 import { postDataUsers } from "../../services/postData";
 import AddDataUsers from "./add-data";
+import { destroyDataUser } from "../../services/destroyData";
+import DestroyData from "./destroy-data";
 
 const TABLE_HEAD = [
   "No",
@@ -42,6 +45,9 @@ const InputData = () => {
   const [active, setActive] = useState(1);
   const [addDataModal, setAddDataModal] = useState(false);
   const [showNotification, setShowNotification] = useState("");
+
+  const [selectedUser, setSelectedUser] = useState(""); 
+  const [destroyDataModal, setDestroyDataModal] = useState(false);
 
   const indexOfLastData = page;
   const indexOfFirstData = indexOfLastData - 10;
@@ -70,6 +76,11 @@ const InputData = () => {
     setAddDataModal(!addDataModal);
   };
 
+  const handleDestroyDataModal = (data) => {
+    setSelectedUser(data);
+    setDestroyDataModal(!destroyDataModal);
+  };
+
   const handleAddSubmit = (formData) => {
     const options = { cookies, formData };
     setShowNotification("sending data ...");
@@ -84,6 +95,20 @@ const InputData = () => {
         console.error(error);
       });
   };
+
+  const handleDestroy = (formData) => {
+    const user_id = formData.get("id");
+    const options = { cookies, user_id };
+    destroyDataUser(options)
+      .then(() => {
+        setShowNotification("Data user berhasil dihapus");
+        setRefresh(!refresh);
+      })
+      .catch((error) => {
+        setShowNotification("Failed to delete data");
+        console.error(error);
+      });
+  }
 
   return (
     <AdminLayout>
@@ -133,6 +158,12 @@ const InputData = () => {
         open={addDataModal}
         handleSubmit={handleAddSubmit}
         handleOpen={handleAddOpen}
+      />
+      <DestroyData
+        open={destroyDataModal}
+        handleSubmit={handleDestroy}
+        handleOpen={handleDestroyDataModal}
+        data={selectedUser}
       />
       <Card color="white" className="p-4 flex">
         <CardBody>
@@ -243,12 +274,14 @@ const InputData = () => {
                         </td>
                         <td className="p-4">
                           <div className="flex gap-2">
-                            <Tooltip content="Edit Data">
+                            <Tooltip content="Hapus User">
                               <IconButton
                                 variant="filled"
-                                // onClick={() => handleOpen(data)}
+                                // size="sm"
+                                color="red"
+                                onClick={() => handleDestroyDataModal(data)}
                               >
-                                <PencilSquareIcon
+                                <TrashIcon
                                   className="h-4 w-4"
                                   color="white"
                                 />

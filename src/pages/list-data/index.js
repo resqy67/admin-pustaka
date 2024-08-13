@@ -416,7 +416,7 @@ const ListData = () => {
                                 />
                               </IconButton>
                             </Tooltip>
-                            <Tooltip content="Edit Buku">
+                            {/* <Tooltip content="Edit Buku">
                               <IconButton
                                 variant="gradient"
                                 color="yellow"
@@ -427,7 +427,7 @@ const ListData = () => {
                                   color="white"
                                 />
                               </IconButton>
-                            </Tooltip>
+                            </Tooltip> */}
                             <Tooltip content="Delete Buku">
                               <IconButton
                                 variant="gradient"
